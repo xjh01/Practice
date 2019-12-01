@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import memberList from '../views/MainContent/Member/List/List.vue'
 import memberLevel from '../views/MainContent/Member/Level.vue'
 import addMember from '../views/MainContent/Member/List/AddMember.vue'
+import editMember from '../views/MainContent/Member/List/updateMember.vue'
 
 Vue.use(VueRouter)
 
@@ -23,7 +24,13 @@ const routes = [{
 	{
 		path: '/member/addmember',
 		component: addMember
+	},
+	{
+		path: '/member/editmember',
+		name: 'EditMember',
+		component: editMember
 	}
+	
 
 	// {
 	// 	path: '/member',

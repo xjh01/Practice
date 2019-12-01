@@ -4,8 +4,8 @@ import VueAxios from 'vue-axios'
 
 Vue.use(VueAxios , axios);
 
-const base = 'http://192.168.0.203:7777'
-
+const base = 'http://192.168.0.203:7777';
+/* 
 const xAxios = {
 	getAdd(way , relUrl , info ){
 		return (Vue.axios({
@@ -41,7 +41,24 @@ const xAxios = {
 				return status >= 200 && status < 300; // default
 			},
 		}))
+	},
+	 */
+export default function xAxios(method , url , data , params){
+		return (Vue.axios({
+			url: url,
+			method: method,
+			baseURL: base,
+			headers: {'Content-Type': 'application/json;charset=UTF-8'},
+			data: data,
+			params: params,
+			timeout: 3000,
+			responseType: 'json',
+			responseEncoding: 'utf8',
+			validateStatus: (status) => {
+				return status >= 200 && status < 300;
+			}
+		}));
 	}
-}
 
-export default xAxios
+// export {xAxios}
+// export default xAxios

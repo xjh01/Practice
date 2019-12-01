@@ -82,27 +82,16 @@
 				let tempage = jsGetAge(birthday)
 				this.age = tempage
 			},
-			submit(userForm) {
-				this.$refs.userForm.validate((valid) => {
-					if (valid) {
-						console.log('userForm ：',typeof(userForm),userForm)
-						console.log('开始发送信息。。。')
-						// xAxios.getAdd('POST','/member_userinfo/add',JSON.stringify(userForm))
-						xAxios.getAdd('POST','/member_userinfo/add',userForm)
-						/* axios.post('http://192.168.0.203:7777/member_userinfo/add',JSON.stringify(userForm),{
-							// `headers` 是即将被发送的自定义请求头
-							headers: {
-								'X-Requested-With': 'XMLHttpRequest',
-								'Content-Type': 'application/json;charset=UTF-8'
-								},
-						}) */
-						.then(response => {console.log(response);alert('提交成功!');})
+			submit(userForm){
+				this.$refs.userForm.validate( valid => {
+					if(valid){
+						xAxios('post','/member_userinfo/add',userForm)
+						.then(response => {console.log(response)})
 						.catch(error => {console.log(error)})
-					} else {
-						console.log('error submit!!');
-						return false;
+					}else{
+						return false
 					}
-				});
+				})
 			}
 		},
 		computed: {
