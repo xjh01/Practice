@@ -6,7 +6,7 @@
 				<el-button type="primary" size="small" style="margin-left: 0.625rem;" @click="addMember">新增</el-button>
 			</el-col>
 		</el-row>
-		<el-table :data="fapiData" style="width: 100%;margin: 0 auto;" highlight-current-row border tooltip-effect="dark" :header-cell-style="tableHeaderColor" size="medium">
+		<el-table :data="listdata.dataList" style="width: 100%;margin: 0 auto;" highlight-current-row border tooltip-effect="dark" :header-cell-style="tableHeaderColor" size="medium">
 			<el-table-column type="index" width="50" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="user_name" label="姓名" header-align="center" align="center" sortable></el-table-column>
 			<el-table-column prop="user_sex" label="性别" width="50" header-align="center" align="center"></el-table-column>
@@ -36,37 +36,37 @@
 					<el-tooltip content="删除" placement="top">
 						<i class="icon el-icon-delete" @click="delMember(scope.row.id)"></i>
 					</el-tooltip>
-					<el-tooltip content="删除2" placement="top">
-						<i class="icon el-icon-delete" @click="delMember2(scope.row.id)"></i>
-					</el-tooltip>
 				</template>
 			</el-table-column>
 		</el-table>
-		<el-pagination background :page-size="10" :pager-count="6" layout="->, prev, pager, next" :total="1000">
-			
-		</el-pagination>
+		<el-pagination background :page-size="listdata.limit" :pager-count="7" layout="-> ,total , prev, pager, next ,jumper" :total="listdata.total" :current-page.sync="currentPage" @current-change="handleCurrentChange(currentPage)"></el-pagination>
 		<el-button @click="test">测试</el-button>
 	</div>
 </template>
 
 <script>
-	import {mapState} from 'vuex'	
+	// import {mapState} from 'vuex'
 	import xAxios from '../../../../components/xAxios.js'
 	
 	export default {
 		data() {
 			return {
 				id: null,
+				listdata: {},
+				currentPage: null,
 				searchFilter:'',
 				dialogVisible: false,
 				detail:{
 					name:'',
 					sex:'',
 					idcard:''
+				},
+				searchData:{
+					currentPage : 1,
+					limit: 10
 				}
 			}
 		},
-		
 		methods: {
 			test(){
 				let data = {
@@ -94,6 +94,23 @@
 					return 'background-color: lightblue;color: #fff;font-weight: 500;'
 				}
 			},
+			handleCurrentChange(page){
+				this.searchData.currentPage = page
+				this.getMemberList()
+			},
+			getMemberList(){
+				xAxios('POST','/member_userinfo/list', this.searchData)
+				.then(response => {
+					// response.data.data.dataList.forEach(dataItem => this.datalist.push(dataItem))
+					/* //成功转换获取
+					let list = JSON.stringify(response.data.data.dataList) 
+					this.datalist = JSON.parse(list) */
+					console.log(response.data.data)
+					this.listdata = response.data.data
+				})
+				.catch(error => console.log(error))
+				// this.$store.commit('getMemberList',{currentPage:1})
+			},
 			addMember(){
 				this.$router.push('/member/addmember')
 			},
@@ -102,25 +119,6 @@
 				this.$router.push({name: 'EditMember', params:{userInfo:userInfo}})
 			},
 			delMember(id){
-				this.$confirm('确定要删除该条记录吗？','确认删除',{
-					confirmButtonText : '确定',
-					cancelButtonText : '取消'
-				})
-				.then(() => {
-					this.$store.commit('delMember',{id: id})
-					this.$message({
-						type: 'success',
-						message: '记录已删除'
-					})
-				})
-				.catch(() => {
-					this.$message({
-						type: 'info',
-						message: '已取消了删除'
-					})
-				})
-			},
-			delMember2(id){
 				this.$confirm('确定要删除该条记录吗？','确认删除',{
 					confirmButtonText : '确定',
 					cancelButtonText : '取消'
@@ -140,18 +138,12 @@
 				})
 			}
 		},
-		computed:{
-			...mapState(['apiData']),
-			fapiData(){
-				return this.apiData.filter( data => data.user_name.indexOf(this.searchFilter)>=0)
-			}
+		filters:{
+			
 		},
 		beforeMount() {
-			this.$store.commit('getMemberList',{currentPage:1})
-		},
-		/* beforeUpdate() {
-			this.$store.commit('getMemberList',{currentPage:1})
-		} */
+			this.getMemberList()
+		}
 	}
 </script>
 

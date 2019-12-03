@@ -31,20 +31,6 @@ const routes = [{
 		component: editMember
 	}
 	
-
-	// {
-	// 	path: '/member',
-	// 	name: 'member',
-	// 	children: [{
-	// 			path: 'list',
-	// 			component: memberList
-	// 		},
-	// 		{
-	// 			path: 'level',
-	// 			component: memberLevel
-	// 		}
-	// 	]
-	// }
 ]
 
 
